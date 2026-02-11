@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Valentine Puzzle 💘</title>
+  <style>
+    :root{
+      --bg1:#0b0b12;
+      --bg2:#1a1023;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.12);
+      --stroke: rgba(255,255,255,.16);
+      --txt: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.70);
+      --pink:#ff4da6;
+      --rose:#ff2e6f;
+      --gold:#ffd56a;
+      --good:#49f2b4;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius: 22px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--txt);
+      background:
+        radial-gradient(1200px 800px at 20% 20%, rgba(255,77,166,.22), transparent 60%),
+        radial-gradient(900px 700px at 80% 10%, rgba(255,46,111,.18), transparent 55%),
+        radial-gradient(900px 900px at 50% 90%, rgba(255,213,106,.14), transparent 60%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+
+    /* Floating hearts */
+    .hearts{
+      position:fixed; inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      opacity:.9;
+    }
+    .heart{
+      position:absolute;
+      bottom:-80px;
+      width:18px; height:18px;
+      transform: rotate(45deg);
+      background: rgba(255,77,166,.22);
+      filter: blur(.2px);
+      animation: floatUp linear forwards;
+      border-radius: 4px;
+    }
+    .heart::before, .heart::after{
+      content:"";
+      position:absolute;
+      width:18px; height:18px;
+      background: inherit;
+      border-radius: 50%;
+    }
+    .heart::before{ left:-9px; top:0; }
+    .heart::after{ left:0; top:-9px; }
+    @keyframes floatUp{
+      to{
+        transform: translateY(-120vh) rotate(45deg);
+        opacity:0;
+      }
+    }
+
+    .wrap{
+      min-height:100%;
+      padding: 18px 16px 22px;
+      padding-bottom: calc(22px + env(safe-area-inset-bottom));
+      display:flex;
+      justify-content:center;
+    }
+
+    .app{
+      width:min(520px, 100%);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding: 16px 16px 12px;
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .top::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(240px 140px at 10% 0%, rgba(255,77,166,.25), transparent 60%),
+        radial-gradient(240px 140px at 90% 20%, rgba(255,213,106,.16), transparent 60%);
+      pointer-events:none;
+      filter: blur(0px);
+    }
+
+    .brand{
+      position:relative; z-index:1;
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .brand h1{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+      line-height:1.15;
+    }
+    .brand p{
+      margin:0;
+      color:var(--muted);
+      font-size: 13px;
+      line-height:1.35;
+    }
+
+    .stats{
+      position:relative; z-index:1;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 10px 12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius: 999px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      font-size: 13px;
+      color: var(--txt);
+      box-shadow: 0 10px 26px rgba(0,0,0,.25);
+      user-select:none;
+    }
+    .dot{
+      width:8px; height:8px;
+      border-radius:50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 3px rgba(255,213,106,.18);
+    }
+    .dot.pink{ background: var(--pink); box-shadow: 0 0 0 3px rgba(255,77,166,.18); }
+    .dot.good{ background: var(--good); box-shadow: 0 0 0 3px rgba(73,242,180,.18); }
+
+    .card{
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.05));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .boardWrap{
+      padding: 16px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .boardHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .boardHeader .title{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+    }
+    .boardHeader .title b{
+      font-size: 14px;
+      letter-spacing:.2px;
+    }
+    .boardHeader .title span{
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .btn{
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: var(--txt);
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .15px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease;
+      box-shadow: 0 10px 22px rgba(0,0,0,.22);
+    }
+    .btn:active{ transform: translateY(1px) scale(.99); }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(255,77,166,.92), rgba(255,46,111,.92));
+      border-color: rgba(255,255,255,.20);
+      box-shadow: 0 16px 30px rgba(255,46,111,.18);
+    }
+    .btn.ghost{
+      background: rgba(255,255,255,.04);
+      box-shadow:none;
+    }
+    .btn small{ font-weight:700; opacity:.9 }
+
+    .grid{
+      width:100%;
+      aspect-ratio: 1 / 1;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.16);
+      position:relative;
+      overflow:hidden;
+      box-shadow: 0 22px 60px rgba(0,0,0,.45);
+      touch-action: manipulation;
+    }
+
+    .tile{
+      position:absolute;
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.22);
+      box-shadow: 0 14px 26px rgba(0,0,0,.28);
+      background-size: 300% 300%;
+      background-repeat: no-repeat;
+      cursor:pointer;
+      display:flex;
+      align-items:flex-end;
+      justify-content:flex-end;
+      padding:10px;
+      overflow:hidden;
+      transform: translate3d(var(--x), var(--y), 0);
+      transition: transform 240ms cubic-bezier(.2,.8,.2,1);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tile::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.18));
+      pointer-events:none;
+    }
+    .tile .num{
+      position:relative;
+      z-index:1;
+      width: 26px;
+      height: 26px;
+      display:grid;
+      place-items:center;
+      border-radius: 9px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,255,255,.22);
+      font-size: 12px;
+      font-weight: 800;
+      color: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .tile.goodMove{
+      animation: pop .16s ease;
+    }
+    @keyframes pop{
+      0%{ transform: translate3d(var(--x), var(--y), 0) scale(1); }
+      70%{ transform: translate3d(var(--x), var(--y), 0) scale(1.03); }
+      100%{ transform: translate3d(var(--x), var(--y), 0) scale(1); }
+    }
+
+    .emptyHint{
+      position:absolute;
+      border: 1px dashed rgba(255,255,255,.22);
+      border-radius: 16px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      transform: translate3d(var(--x), var(--y), 0);
+      transition: transform 240ms cubic-bezier(.2,.8,.2,1), opacity .2s ease;
+      opacity: 0;
+      pointer-events:none;
+    }
+    .showHint .emptyHint{ opacity: .9; }
+
+    .footerNote{
+      padding: 0 16px 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height:1.4;
+      text-align:center;
+    }
+
+    .modal{
+      position:fixed; inset:0;
+      display:none;
+      place-items:center;
+      padding: 18px;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index:50;
+    }
+    .modal.show{ display:grid; }
+    .modalCard{
+      width:min(520px, 100%);
+      border-radius: 24px;
+      border:1px solid rgba(255,255,255,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      padding: 16px;
+      position:relative;
+      overflow:hidden;
+    }
+    .modalCard::after{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(280px 160px at 20% 0%, rgba(255,77,166,.30), transparent 60%),
+        radial-gradient(280px 160px at 80% 10%, rgba(255,213,106,.18), transparent 60%);
+      pointer-events:none;
+    }
+    .modalTop{
+      position:relative; z-index:1;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+    }
+    .modalTop h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .modalTop p{
+      margin:6px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height:1.35;
+    }
+    .closeX{
+      width:42px; height:42px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: var(--txt);
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .modalBody{
+      position:relative; z-index:1;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .preview{
+      width: 120px;
+      aspect-ratio:1/1;
+      border-radius: 18px;
+      border:1px solid rgba(255,255,255,.18);
+      background-size: cover;
+      background-position:center;
+      box-shadow: 0 18px 44px rgba(0,0,0,.35);
+      position:relative;
+      overflow:hidden;
+    }
+    .preview::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, transparent, rgba(0,0,0,.18));
+    }
+    .modalStats{
+      flex: 1 1 180px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width: 180px;
+    }
+    .big{
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing:.2px;
+      margin:0;
+    }
+    .sub{
+      margin:0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height:1.35;
+    }
+    .modalActions{
+      display:flex;
+      gap:10px;
+      width:100%;
+      margin-top: 12px;
+    }
+    .modalActions .btn{ flex:1; justify-content:center; }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      transform:translateX(-50%);
+      bottom: calc(18px + env(safe-area-inset-bottom));
+      background: rgba(15,15,26,.82);
+      border:1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.90);
+      padding: 10px 12px;
+      border-radius: 999px;
+      box-shadow: 0 16px 50px rgba(0,0,0,.5);
+      font-size: 13px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+      z-index: 60;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      max-width: calc(100% - 24px);
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    .srOnly{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+      overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="wrap">
+    <div class="app">
+      <div class="top">
+        <div class="brand">
+          <h1>Valentine Puzzle <span aria-hidden="true">💘</span></h1>
+          <p>Slide tiles to reveal the love story. Finish it to unlock a sweet surprise.</p>
+        </div>
+        <div class="stats">
+          <div class="pill" title="Moves">
+            <span class="dot pink"></span>
+            <span><span id="moves">0</span> moves</span>
+          </div>
+          <div class="pill" title="Time">
+            <span class="dot"></span>
+            <span><span id="time">00:00</span></span>
+          </div>
+          <div class="pill" title="State">
+            <span class="dot good"></span>
+            <span id="stateLabel">Shuffled</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="boardWrap">
+          <div class="boardHeader">
+            <div class="title">
+              <b>3×3 Sliding Puzzle</b>
+              <span>Tap a tile next to the empty spot to slide.</span>
+            </div>
+            <div class="actions">
+              <button class="btn ghost" id="hintBtn" type="button">✨ Hint</button>
+              <button class="btn" id="resetBtn" type="button">↻ Reset</button>
+              <button class="btn primary" id="shuffleBtn" type="button">💞 Shuffle</button>
+            </div>
+          </div>
+
+          <div class="grid" id="grid" aria-label="Sliding puzzle board" role="application">
+            <div class="emptyHint" id="emptyHint"></div>
+          </div>
+        </div>
+        <div class="footerNote">
+          Tip: If you get stuck, hit <b>Hint</b> to reveal the empty slot for 2 seconds.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Win Modal -->
+  <div class="modal" id="winModal" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+    <div class="modalCard">
+      <div class="modalTop">
+        <div>
+          <h2 id="winTitle">You did it! 💖</h2>
+          <p>Perfect match. The picture is complete — just like the vibe.</p>
+        </div>
+        <div class="closeX" id="closeModal" aria-label="Close">✕</div>
+      </div>
+      <div class="modalBody">
+        <div class="preview" id="preview"></div>
+        <div class="modalStats">
+          <p class="big" id="winBig">00:00 • 0 moves</p>
+          <p class="sub" id="winSub">Share this with your favorite person, or keep it as your secret win 🫶</p>
+        </div>
+        <div class="modalActions">
+          <button class="btn ghost" id="copyBtn" type="button">📋 Copy message</button>
+          <button class="btn primary" id="playAgainBtn" type="button">💝 Play again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span>💌</span><span id="toastText">Copied!</span>
+  </div>
+
+  <script>
+    /**
+     * Valentine 3x3 Sliding Puzzle (8-puzzle)
+     * - One image URL
+     * - Always shuffled to a solvable state
+     * - Tap-to-move tiles adjacent to empty
+     */
+
+    // ✅ Change this URL to any image you want:
+    const IMAGE_URL = "1.jpeg";
+
+    const N = 3; // grid size
+    const total = N * N; // 9
+    const emptyValue = total; // represent empty as 9
+
+    const gridEl = document.getElementById("grid");
+    const movesEl = document.getElementById("moves");
+    const timeEl  = document.getElementById("time");
+    const stateLabel = document.getElementById("stateLabel");
+    const emptyHintEl = document.getElementById("emptyHint");
+
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const hintBtn = document.getElementById("hintBtn");
+
+    const winModal = document.getElementById("winModal");
+    const closeModal = document.getElementById("closeModal");
+    const preview = document.getElementById("preview");
+    const winBig = document.getElementById("winBig");
+    const copyBtn = document.getElementById("copyBtn");
+    const playAgainBtn = document.getElementById("playAgainBtn");
+
+    const toast = document.getElementById("toast");
+    const toastText = document.getElementById("toastText");
+
+    // Heart background
+    const hearts = document.getElementById("hearts");
+    function spawnHeart(){
+      const h = document.createElement("div");
+      h.className = "heart";
+      const size = 10 + Math.random()*18;
+      h.style.width = size + "px";
+      h.style.height = size + "px";
+      h.style.left = (Math.random()*100) + "vw";
+      h.style.animationDuration = (6 + Math.random()*8) + "s";
+      h.style.opacity = (0.25 + Math.random()*0.5);
+      h.style.background = Math.random() > 0.5 ? "rgba(255,77,166,.22)" : "rgba(255,46,111,.18)";
+      hearts.appendChild(h);
+      setTimeout(()=>h.remove(), 15000);
+    }
+    setInterval(spawnHeart, 420);
+
+    // State
+    let tiles = [];           // length 9, values 1..9 where 9 is empty
+    let tileEls = new Map();  // value -> element (1..8)
+    let emptyIndex = 8;
+    let moves = 0;
+    let timerId = null;
+    let startTs = null;
+    let solvedOnce = false;
+
+    // Base solved state
+    const solved = Array.from({length: total}, (_, i) => i + 1);
+
+    function idxToRC(idx){ return { r: Math.floor(idx / N), c: idx % N }; }
+    function rcToIdx(r,c){ return r*N + c; }
+
+    function formatTime(ms){
+      const s = Math.floor(ms/1000);
+      const m = Math.floor(s/60);
+      const ss = s % 60;
+      return String(m).padStart(2,"0") + ":" + String(ss).padStart(2,"0");
+    }
+
+    function startTimer(){
+      if (timerId) return;
+      startTs = performance.now();
+      timerId = setInterval(()=>{
+        const now = performance.now();
+        timeEl.textContent = formatTime(now - startTs);
+      }, 250);
+    }
+    function stopTimer(){
+      if (!timerId) return;
+      clearInterval(timerId);
+      timerId = null;
+    }
+    function resetTimer(){
+      stopTimer();
+      timeEl.textContent = "00:00";
+      startTs = null;
+    }
+
+    function showToast(msg){
+      toastText.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1200);
+    }
+
+    // Inversion parity check for solvability (odd grid: solvable if inversions even)
+    function inversionCount(arr){
+      const a = arr.filter(v => v !== emptyValue);
+      let inv = 0;
+      for (let i=0;i<a.length;i++){
+        for (let j=i+1;j<a.length;j++){
+          if (a[i] > a[j]) inv++;
+        }
+      }
+      return inv;
+    }
+    function isSolvable(arr){
+      // N=3 odd -> inversions even
+      return inversionCount(arr) % 2 === 0;
+    }
+
+    function shuffleSolvable(){
+      let arr;
+      do{
+        arr = solved.slice().sort(()=>Math.random()-0.5);
+      } while (!isSolvable(arr) || isSolved(arr));
+      return arr;
+    }
+
+    function isSolved(arr = tiles){
+      for (let i=0;i<total;i++){
+        if (arr[i] !== solved[i]) return false;
+      }
+      return true;
+    }
+
+    function setStateLabel(text){
+      stateLabel.textContent = text;
+    }
+
+    function setMoves(val){
+      moves = val;
+      movesEl.textContent = String(moves);
+    }
+
+    function layout(){
+      // compute tile size from grid box
+      const rect = gridEl.getBoundingClientRect();
+      const gap = 2; // implicit "spacing" feel via inner margins (we'll do by sizing)
+      const size = rect.width;
+      const tileSize = Math.floor(size / N);
+      const pad = 0;
+
+      // empty hint size & position
+      const {r:er, c:ec} = idxToRC(emptyIndex);
+      emptyHintEl.style.width = (tileSize - gap) + "px";
+      emptyHintEl.style.height = (tileSize - gap) + "px";
+      emptyHintEl.style.setProperty("--x", (ec*tileSize + gap/2 + pad) + "px");
+      emptyHintEl.style.setProperty("--y", (er*tileSize + gap/2 + pad) + "px");
+
+      // position each tile
+      for (let i=0;i<total;i++){
+        const v = tiles[i];
+        if (v === emptyValue) continue;
+        const el = tileEls.get(v);
+        const {r,c} = idxToRC(i);
+        el.style.width = (tileSize - gap) + "px";
+        el.style.height = (tileSize - gap) + "px";
+        el.style.setProperty("--x", (c*tileSize + gap/2 + pad) + "px");
+        el.style.setProperty("--y", (r*tileSize + gap/2 + pad) + "px");
+      }
+    }
+
+    function canMove(tileIndex){
+      const {r:tr, c:tc} = idxToRC(tileIndex);
+      const {r:er, c:ec} = idxToRC(emptyIndex);
+      const manhattan = Math.abs(tr-er) + Math.abs(tc-ec);
+      return manhattan === 1;
+    }
+
+    function swap(i,j){
+      const t = tiles[i];
+      tiles[i] = tiles[j];
+      tiles[j] = t;
+    }
+
+    function celebrate(){
+      // quick burst of hearts
+      for (let i=0;i<28;i++){
+        setTimeout(spawnHeart, i*30);
+      }
+    }
+
+    function openWin(){
+      stopTimer();
+      preview.style.backgroundImage = `url('${IMAGE_URL}')`;
+      const t = timeEl.textContent;
+      winBig.textContent = `${t} • ${moves} moves`;
+      winModal.classList.add("show");
+      celebrate();
+    }
+
+    function closeWin(){
+      winModal.classList.remove("show");
+    }
+
+    function tryMoveByValue(v){
+      // find its index
+      const idx = tiles.indexOf(v);
+      if (idx < 0) return;
+      if (!canMove(idx)) return;
+
+      if (!timerId) startTimer();
+      setStateLabel("In progress");
+
+      // swap with empty
+      swap(idx, emptyIndex);
+      emptyIndex = idx;
+
+      // pop animation
+      const el = tileEls.get(v);
+      el.classList.remove("goodMove");
+      void el.offsetWidth; // reflow
+      el.classList.add("goodMove");
+
+      setMoves(moves + 1);
+      layout();
+
+      if (isSolved() && !solvedOnce){
+        solvedOnce = true;
+        setStateLabel("Completed!");
+        setTimeout(openWin, 250);
+      }
+    }
+
+    function buildBoard(){
+      gridEl.querySelectorAll(".tile").forEach(n => n.remove());
+      tileEls.clear();
+
+      // create 8 tiles
+      for (let v=1; v<=total-1; v++){
+        const el = document.createElement("div");
+        el.className = "tile";
+        el.setAttribute("role", "button");
+        el.setAttribute("tabindex", "0");
+        el.setAttribute("aria-label", `Tile ${v}`);
+        el.style.backgroundImage = `url('${IMAGE_URL}')`;
+
+        // background position based on solved placement
+        const solvedIndex = v-1;
+        const {r,c} = idxToRC(solvedIndex);
+        // Use 3x3 background scaling: 300% 300% and position by tile
+        const bx = (c * 50);
+        const by = (r * 50);
+        el.style.backgroundSize = `${N*100}% ${N*100}%`;
+        el.style.backgroundPosition = `${bx}% ${by}%`;
+
+        const badge = document.createElement("div");
+        badge.className = "num";
+        badge.textContent = v;
+        el.appendChild(badge);
+
+        el.addEventListener("click", ()=> tryMoveByValue(v));
+        el.addEventListener("keydown", (e)=>{
+          if (e.key === "Enter" || e.key === " "){
+            e.preventDefault();
+            tryMoveByValue(v);
+          }
+        });
+
+        tileEls.set(v, el);
+        gridEl.appendChild(el);
+      }
+    }
+
+    function newGame(shuffle=true){
+      solvedOnce = false;
+      setMoves(0);
+      resetTimer();
+      setStateLabel(shuffle ? "Shuffled" : "Ready");
+
+      tiles = shuffle ? shuffleSolvable() : solved.slice();
+      emptyIndex = tiles.indexOf(emptyValue);
+
+      buildBoard();
+      // layout after images load enough
+      requestAnimationFrame(layout);
+    }
+
+    // Hint: show empty position briefly
+    let hintTimeout = null;
+    function showHint(){
+      gridEl.classList.add("showHint");
+      clearTimeout(hintTimeout);
+      hintTimeout = setTimeout(()=> gridEl.classList.remove("showHint"), 2000);
+    }
+
+    // Buttons
+    shuffleBtn.addEventListener("click", ()=>{
+      newGame(true);
+      showToast("Shuffled 💞");
+    });
+
+    resetBtn.addEventListener("click", ()=>{
+      // reset to solved then shuffle once to keep puzzle playable
+      newGame(true);
+      showToast("Reset ✨");
+    });
+
+    hintBtn.addEventListener("click", ()=>{
+      showHint();
+      showToast("Empty spot shown 👀");
+    });
+
+    closeModal.addEventListener("click", closeWin);
+    winModal.addEventListener("click", (e)=>{
+      if (e.target === winModal) closeWin();
+    });
+
+    playAgainBtn.addEventListener("click", ()=>{
+      closeWin();
+      newGame(true);
+      showToast("New game 💝");
+    });
+
+    copyBtn.addEventListener("click", async ()=>{
+      const msg = `I solved your Valentine puzzle 💘 in ${timeEl.textContent} with ${moves} moves. Now you owe me a cute date 😌`;
+      try{
+        await navigator.clipboard.writeText(msg);
+        showToast("Message copied 💌");
+      }catch{
+        // fallback
+        const ta = document.createElement("textarea");
+        ta.value = msg;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        ta.remove();
+        showToast("Message copied 💌");
+      }
+    });
+
+    // Responsive relayout
+    let resizeTO = null;
+    window.addEventListener("resize", ()=>{
+      clearTimeout(resizeTO);
+      resizeTO = setTimeout(layout, 60);
+    });
+
+    // Init
+    newGame(true);
+
+    // Prevent double-tap zoom issues on iOS for the board
+    gridEl.addEventListener("touchend", (e)=>{
+      e.preventDefault();
+    }, {passive:false});
+  </script>
+</body>
+</html>
